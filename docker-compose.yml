@@ -1,0 +1,45 @@
+version: '3.1'
+services:
+  easy-appointments:
+    image: victorqueirogabr/easy-appointments-g2
+    build:
+      context: .  # O contexto do build deve apontar para o diretório com o Dockerfile do Easy!Appointments
+    ports:
+      - "80:80"
+    environment:
+      VERSION: ${VERSION}  # Especifique a versão desejada do Easy!Appointments
+      DB_HOST: 'mysql'
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      GOOGLE_SYNC_FEATURE: ${GOOGLE_SYNC_FEATURE}
+      GOOGLE_PRODUCT_NAME: ${GOOGLE_PRODUCT_NAME}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      EMAIL_ENABLED: ${EMAIL_ENABLED}
+      EMAIL_AUTH: ${EMAIL_AUTH}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      EMAIL_CRYPTO: ${EMAIL_CRYPTO}
+      EMAIL_PORT: ${EMAIL_PORT}
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - "mysql:/var/lib/mysql"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql: {}
