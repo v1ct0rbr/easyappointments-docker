@@ -43,7 +43,7 @@ Rode o comando:
 $ docker-compose build
 ```
 
-E em seguida rodo o comando:
+E em seguida rode o comando:
 ```bash
 $ docker-compose up
 ```
