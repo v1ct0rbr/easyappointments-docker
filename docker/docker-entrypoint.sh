@@ -34,7 +34,7 @@ sed -i "s|const DB_USERNAME   = 'root';|const DB_USERNAME   = '$DB_USERNAME';|g"
 sed -i "s|const DB_PASSWORD   = 'root';|const DB_PASSWORD   = '$DB_PASSWORD';|g" config.php
 
 sed -i "s|const GOOGLE_SYNC_FEATURE   = FALSE;|const GOOGLE_SYNC_FEATURE       = '$GOOGLE_SYNC_FEATURE';|g" config.php
-sed -i "s|const GOOGLE_PRODUCT_NAME   = '';|const GOOGLE_PRODUCT_NAME   = '$GOOGLE_GOOGLE_PRODUCT_NAME';|g" config.php
+sed -i "s|const GOOGLE_PRODUCT_NAME   = '';|const GOOGLE_PRODUCT_NAME   = '$GOOGLE_PRODUCT_NAME';|g" config.php
 sed -i "s|const GOOGLE_CLIENT_ID      = '';|const GOOGLE_CLIENT_ID      = '$GOOGLE_CLIENT_ID';|g" config.php
 sed -i "s|const GOOGLE_CLIENT_SECRET  = '';|const GOOGLE_CLIENT_SECRET  = '$GOOGLE_CLIENT_SECRET';|g" config.php
 sed -i "s|const GOOGLE_API_KEY        = '';|const GOOGLE_API_KEY        = '$GOOGLE_API_KEY';|g" config.php
@@ -60,8 +60,11 @@ if [ "$EMAIL_ENABLED" = "TRUE" ]; then
     #cat application/config/email.php
     echo "Substituição realizada em email.php"
 else
-    echo "A variável EMAIL_ENABLED não é igual a TRUE. Nenhuma substituição realizada."
+    echo "Configuracao de email nao habilitada. Nenhuma substituição realizada."
 fi
+
+echo 'listando a pasta principal...'
+ls -la /var/www/html
 
 
 apache2-foreground

@@ -1,6 +1,6 @@
 FROM php:8.0-apache
 
-## MAINTAINER Alex Tselegidis (alextselegidis.com)
+## MAINTAINER Victor Queiroga (victorqueiroga.com)
 
 ENV VERSION="1.4.3"
 ENV BASE_URL="http://localhost"
@@ -40,16 +40,15 @@ RUN apt-get update \
     && docker-php-ext-enable xdebug 
 
 
-RUN if [ -z "$(ls -A /var/www/html)" ]; then \
-    # Limpe o diretório existente, se houver algo
-    rm -rf /var/www/html/* && \
-    # Baixe o programa Easy!Appointments na versão especificada
+RUN if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/application)" ]; then \
+    echo "---- A pasta 'application' não existe ou está vazia. A aplicação será baixada para o diretório /var/www/html ====----"; \
     wget https://github.com/alextselegidis/easyappointments/releases/download/${VERSION}/easyappointments-${VERSION}.zip \
     && unzip easyappointments-${VERSION}.zip \
     && rm easyappointments-${VERSION}.zip \
     && echo "alias ll=\"ls -al\"" >> /root/.bashrc; \
 fi
-COPY ./assets/ /var/www/html/assets
+
+COPY ./assets /var/www/html/assets
 
 
 RUN apt-get -y autoremove \
