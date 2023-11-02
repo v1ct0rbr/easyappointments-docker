@@ -49,6 +49,7 @@ RUN if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/applic
 fi
 
 COPY ./assets /var/www/html/assets
+COPY ./utils/integrity_test.php .
 
 
 RUN apt-get -y autoremove \
