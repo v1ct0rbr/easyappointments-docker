@@ -34,6 +34,7 @@ COPY ./docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 RUN apt-get update \
+    && apt-get install -y nfs-common \
     && apt-get install -y libfreetype-dev libjpeg62-turbo-dev libpng-dev unzip wget nano \
 	&& curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
       curl gd mbstring mysqli xdebug gettext \

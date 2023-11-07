@@ -49,14 +49,14 @@ if [ "$EMAIL_ENABLED" = "TRUE" ]; then
     sed -i "s|\$config\['mailtype'\].*|\$config['mailtype'] = 'html';|" "$email_file"
     #'TRUE'; // or 'FALSE'
     sed -i "s|// \$config\['smtp_debug'\] = '0';|\$config['smtp_debug'] = '0';|" "$email_file" 
-    sed -i "s|// \$config\['smtp_auth'\] = TRUE;|\$config['smtp_auth'] = '$EMAIL_AUTH';|" "$email_file" 
+    sed -i "s|// \$config\['smtp_auth'\] = TRUE;|\$config['smtp_auth'] = $EMAIL_AUTH;|" "$email_file" 
     sed -i "s|// \$config\['smtp_host'\] = '';|\$config['smtp_host'] = '$EMAIL_HOST';|" "$email_file"
     sed -i "s|// \$config\['smtp_user'\] = '';|\$config[\'smtp_user\'] = '$EMAIL_USER';|" "$email_file"
     sed -i "s|// \$config\['smtp_pass'\] = '';|\$config['smtp_pass'] = '$EMAIL_PASS';|" "$email_file"
     # ssl ou 'tls'
     sed -i "s|// \$config\['smtp_crypto'\] = 'ssl'; // or 'tls'|\$config['smtp_crypto'] = '$EMAIL_CRYPTO';|" "$email_file"
     # 465 ou 2465
-    sed -i "s|// \$config\['smtp_port'\] = 25;|\$config['smtp_port'] = '$EMAIL_PORT';|" "$email_file"
+    sed -i "s|// \$config\['smtp_port'\] = 25;|\$config['smtp_port'] = $EMAIL_PORT;|" "$email_file"
     #cat application/config/email.php
     echo "Substituição realizada em email.php"
 else
