@@ -20,9 +20,29 @@
 #
 #  ./docker-entrypoint.sh
 #
+
+if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/application)" ]; then 
+    echo "---- A pasta 'application' não existe ou está vazia. A aplicação será baixada para o diretório /var/www/html ====----";
+    wget https://github.com/alextselegidis/easyappointments/releases/download/${VERSION}/easyappointments-${VERSION}.zip;
+    unzip easyappointments-${VERSION}.zip
+    rm easyappointments-${VERSION}.zip
+    echo "alias ll=\"ls -al\"" >> /root/.bashrc; 
+    mv ./* /var/www/html 
+    cp /var/www/html/config-sample.php /var/www/html/config.php
+else
+    echo "---- A aplicação já se encontra no sistema de arquivos";
+fi
+
+cd /var/www/html
+
+cp -f /tmp/dependencies/integrity_test.php .
+cp -f /tmp/dependencies/assets/css/* ./assets/css 
+cp -f /tmp/dependencies/assets/img/* ./assets/img 
+
+
 email_file="./application/config/email.php"
 
-cp config-sample.php config.php
+
 
 sed -i "s|const BASE_URL      = 'http://url-to-easyappointments-directory';|const BASE_URL      = '$BASE_URL';|g" config.php
 sed -i "s|const LANGUAGE      = 'english';|const LANGUAGE      = '$LANGUAGE';|g" config.php

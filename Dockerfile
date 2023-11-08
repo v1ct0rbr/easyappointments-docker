@@ -26,7 +26,9 @@ ENV EMAIL_PORT=""
 
 EXPOSE 80
 
-WORKDIR /var/www/html
+RUN mkdir /tmp/app && mkdir -p /tmp/dependencies/assets
+
+WORKDIR /tmp/app
 
 COPY ./docker/99-overrides.ini /usr/local/etc/php/conf.d
 COPY ./docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
@@ -36,26 +38,15 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN apt-get update \
     && apt-get install -y nfs-common \
     && apt-get install -y libfreetype-dev libjpeg62-turbo-dev libpng-dev unzip wget nano \
-	&& curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
-      curl gd mbstring mysqli xdebug gettext \
+	&& curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s curl gd mbstring mysqli xdebug gettext \
     && docker-php-ext-enable xdebug 
 
-
-RUN if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/application)" ]; then \
-    echo "---- A pasta 'application' não existe ou está vazia. A aplicação será baixada para o diretório /var/www/html ====----"; \
-    wget https://github.com/alextselegidis/easyappointments/releases/download/${VERSION}/easyappointments-${VERSION}.zip \
-    && unzip easyappointments-${VERSION}.zip \
-    && rm easyappointments-${VERSION}.zip \
-    && echo "alias ll=\"ls -al\"" >> /root/.bashrc; \
-fi
-
-COPY ./assets /var/www/html/assets
-COPY ./utils/integrity_test.php .
-
+COPY ./utils/integrity_test.php /tmp/dependencies
+COPY ./assets /tmp/dependencies/assets
 
 RUN apt-get -y autoremove \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* /var/tmp/* \
     && chown -R www-data:www-data .
 
 
