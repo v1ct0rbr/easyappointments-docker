@@ -88,7 +88,9 @@ ls -la /var/www/html
 
 if [ -f "/var/www/html/config.php" ]; then
     echo " -= arquivo de configuracoes =- ";
-    cat /var/www/html/config.php;
+  
 fi
+
+chown -R www-data:www-data /var/www/html
 
 apache2-foreground
