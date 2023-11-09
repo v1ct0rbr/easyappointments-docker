@@ -4,8 +4,8 @@
 # Easy!Appointments - Online Appointment Scheduler
 #
 # @package     EasyAppointments
-# @author      A.Tselegidis <alextselegidis@gmail.com>
-# @copyright   Copyright (c) Alex Tselegidis
+# @author      Victor Queiroga <victorqueiroga.jp.com>
+# @copyright   Baseado no projeto de Alex Tselegidis
 # @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
 # @link        https://easyappointments.org
 # -----------------------------------------------------------------------------
@@ -21,14 +21,11 @@
 #  ./docker-entrypoint.sh
 #
 
+
 if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/application)" ]; then 
-    echo "---- A pasta 'application' não existe ou está vazia. A aplicação será baixada para o diretório /var/www/html ====----";
-    wget https://github.com/alextselegidis/easyappointments/releases/download/${VERSION}/easyappointments-${VERSION}.zip;
-    unzip easyappointments-${VERSION}.zip
-    rm easyappointments-${VERSION}.zip
-    echo "alias ll=\"ls -al\"" >> /root/.bashrc; 
-    mv ./* /var/www/html 
-    cp /var/www/html/config-sample.php /var/www/html/config.php
+    cp -r ./* /var/www/html 
+    cp -f /var/www/html/config-sample.php /var/www/html/config.php
+    rm -rf  ./*
 else
     echo "---- A aplicação já se encontra no sistema de arquivos";
 fi

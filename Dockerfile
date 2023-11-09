@@ -44,6 +44,11 @@ RUN apt-get update \
 COPY ./utils/integrity_test.php /tmp/dependencies
 COPY ./assets /tmp/dependencies/assets
 
+RUN wget https://github.com/alextselegidis/easyappointments/releases/download/${VERSION}/easyappointments-${VERSION}.zip \
+    && unzip easyappointments-${VERSION}.zip \
+    && rm easyappointments-${VERSION}.zip \
+    && echo "alias ll=\"ls -al\"" >> /root/.bashrc 
+
 RUN apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/tmp/* \
