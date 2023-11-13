@@ -22,35 +22,32 @@
 #
 mount_path="/var/www/html"
 
-if [ "$MOUNT_PATH_VERIFICATION" = "TRUE" ]; then
-    while ! df -h | grep -qs "$mount_path"; do
-        echo "Aguardando que o sistema de arquivos seja montado em $mount_path..."
-        sleep 5
-    done
-    echo "---=== Sistema de arquivos montado com sucesso em $mount_path ===---"
-else
-    echo "---===Sem verificação do sistema de arquivos ===---"
-fi
+
 
 if [ ! -d "$mount_path/application" ] || [ ! "$(ls -A $mount_path/application)" ]; then 
+    echo "1. ---=== COPIANDO OS ARQUIVOS DA APLICAÇÃO ===---"
     cp -r ./* $mount_path 
     cp -f $mount_path/config-sample.php $mount_path/config.php
+    chmod -R 755 $mount_path
+    chown -R www-data:www-data $mount_path
     rm -rf  ./*
 else
-    echo "---- A aplicação já se encontra no sistema de arquivos";
+    echo "1. ----- A APLICAÇÃO JÁ CONTÉM OS ARQUIVOS DA APLICAÇÃO -----";
 fi
 
 cd $mount_path
 
+echo "2. ---=== COPIANDO OUTRAS DEPENDÊNCIAS E CUSTOMIZAÇÕES ===---";
 cp -f /tmp/dependencies/integrity_test.php .
 cp -f /tmp/dependencies/assets/css/* ./assets/css 
 cp -f /tmp/dependencies/assets/img/* ./assets/img 
+echo "..... CÓPIA DAS PEDENDÊNCIAS CONCLUÍDA";
 
 
 email_file="./application/config/email.php"
 
 
-
+echo "3. ---=== ALTERANDO ARQUIVO DE CONFIGURAÇÕES BASE  ===---";
 sed -i "s|const BASE_URL      = 'http://url-to-easyappointments-directory';|const BASE_URL      = '$BASE_URL';|g" config.php
 sed -i "s|const LANGUAGE      = 'english';|const LANGUAGE      = '$LANGUAGE';|g" config.php
 sed -i "s|const DEBUG_MODE    = FALSE;|const DEBUG_MODE    = $DEBUG_MODE;|g" config.php
@@ -65,10 +62,11 @@ sed -i "s|const GOOGLE_PRODUCT_NAME   = '';|const GOOGLE_PRODUCT_NAME   = '$GOOG
 sed -i "s|const GOOGLE_CLIENT_ID      = '';|const GOOGLE_CLIENT_ID      = '$GOOGLE_CLIENT_ID';|g" config.php
 sed -i "s|const GOOGLE_CLIENT_SECRET  = '';|const GOOGLE_CLIENT_SECRET  = '$GOOGLE_CLIENT_SECRET';|g" config.php
 sed -i "s|const GOOGLE_API_KEY        = '';|const GOOGLE_API_KEY        = '$GOOGLE_API_KEY';|g" config.php
-
+echo "....ALTERAÇÃO CONCLUÍDA";
 
 # Verificar o valor da variável $EMAIL_ENABLED
 if [ "$EMAIL_ENABLED" = "TRUE" ]; then
+    echo "4. ---=== ALTERANDO ARQUIVO DE CONFIGURAÇÕES DE E-MAIL  ===---";
     # Executar a substituição no arquivo email.php usando sed
     sed -i "s|\$config\['useragent'\].*|\$config['useragent'] = 'Easy!Appointments';|" "$email_file"
     #'TRUE'; // or 'FALSE'
@@ -85,19 +83,14 @@ if [ "$EMAIL_ENABLED" = "TRUE" ]; then
     # 465 ou 2465
     sed -i "s|// \$config\['smtp_port'\] = 25;|\$config['smtp_port'] = $EMAIL_PORT;|" "$email_file"
     #cat application/config/email.php
-    echo "Substituição realizada em email.php"
+    echo "......SUBSTITUIÇÃO REALIZA EM 'email.php'"
 else
     echo "Configuracao de email nao habilitada. Nenhuma substituição realizada."
 fi
 
-echo 'listando a pasta principal...'
-ls -la /var/www/html
+chmod -R 755 ./config.php $email_file
+chown -R www-data:www-data ./config.php $email_file
 
-if [ -f "/var/www/html/config.php" ]; then
-    echo " -= arquivo de configuracoes =- ";
-  
-fi
-
-chown -R www-data:www-data /var/www/html
+echo "================ MONTAGEM DO CONTEINER CONCLUÍDO ==================";
 
 apache2-foreground
