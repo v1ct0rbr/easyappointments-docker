@@ -20,17 +20,27 @@
 #
 #  ./docker-entrypoint.sh
 #
+mount_path="/var/www/html"
 
+if [ "$MOUNT_PATH_VERIFICATION" = "TRUE" ]; then
+    while ! df -h | grep -qs "$mount_path"; do
+        echo "Aguardando que o sistema de arquivos seja montado em $mount_path..."
+        sleep 5
+    done
+    echo "---=== Sistema de arquivos montado com sucesso em $mount_path ===---"
+else
+    echo "---===Sem verificação do sistema de arquivos ===---"
+fi
 
-if [ ! -d "/var/www/html/application" ] || [ ! "$(ls -A /var/www/html/application)" ]; then 
-    cp -r ./* /var/www/html 
-    cp -f /var/www/html/config-sample.php /var/www/html/config.php
+if [ ! -d "$mount_path/application" ] || [ ! "$(ls -A $mount_path/application)" ]; then 
+    cp -r ./* $mount_path 
+    cp -f $mount_path/config-sample.php $mount_path/config.php
     rm -rf  ./*
 else
     echo "---- A aplicação já se encontra no sistema de arquivos";
 fi
 
-cd /var/www/html
+cd $mount_path
 
 cp -f /tmp/dependencies/integrity_test.php .
 cp -f /tmp/dependencies/assets/css/* ./assets/css 

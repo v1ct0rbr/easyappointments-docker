@@ -22,9 +22,11 @@ ENV EMAIL_USER=""
 ENV EMAIL_PASS=""
 ENV EMAIL_CRYPTO=""
 ENV EMAIL_PORT=""
+ENV MOUNT_PATH_VERIFICATION="FALSE"
 
 
 EXPOSE 80
+
 
 RUN mkdir /tmp/app && mkdir -p /tmp/dependencies/assets
 
