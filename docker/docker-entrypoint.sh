@@ -28,7 +28,6 @@ if [ ! -d "$mount_path/application" ] || [ ! "$(ls -A $mount_path/application)" 
     echo "1. ---=== COPIANDO OS ARQUIVOS DA APLICAÇÃO ===---"
     cp -r ./* $mount_path 
     cp -f $mount_path/config-sample.php $mount_path/config.php
-    chmod -R 755 $mount_path
     chown -R www-data:www-data $mount_path
     rm -rf  ./*
 else
@@ -64,6 +63,14 @@ sed -i "s|const GOOGLE_CLIENT_SECRET  = '';|const GOOGLE_CLIENT_SECRET  = '$GOOG
 sed -i "s|const GOOGLE_API_KEY        = '';|const GOOGLE_API_KEY        = '$GOOGLE_API_KEY';|g" config.php
 echo "....ALTERAÇÃO CONCLUÍDA";
 
+if [ "$RATE_LIMITING_DISABLED" = "TRUE" ]; then
+    echo '===== Desabilitando o rate limiting =====';
+    sed -i "s|\$config\['rate_limiting'\] = TRUE;|\$config\['rate_limiting'\] = FALSE;|" "./application/config/config.php"
+else
+    echo '===== Habilitando o rate limiting =====';
+    sed -i "s|\$config\['rate_limiting'\] = FALSE;|\$config\['rate_limiting'\] = TRUE;|" "./application/config/config.php"
+fi
+
 # Verificar o valor da variável $EMAIL_ENABLED
 if [ "$EMAIL_ENABLED" = "TRUE" ]; then
     echo "4. ---=== ALTERANDO ARQUIVO DE CONFIGURAÇÕES DE E-MAIL  ===---";
@@ -88,7 +95,7 @@ else
     echo "Configuracao de email nao habilitada. Nenhuma substituição realizada."
 fi
 
-chmod -R 755 ./config.php $email_file
+#chmod -R 755 ./config.php $email_file
 chown -R www-data:www-data ./config.php $email_file
 
 echo "================ MONTAGEM DO CONTEINER CONCLUÍDO ==================";
