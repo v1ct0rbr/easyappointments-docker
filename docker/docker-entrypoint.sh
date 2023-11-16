@@ -31,7 +31,6 @@ if [ ! -d "./application" ] || [ ! "$(ls -A ./application)" ]; then
     cp -r /tmp/app/* . 
     cp -f ./config-sample.php ./config.php
     rm ./config-sample.php
-    chmod -R 755 .
     chown -R www-data:www-data .    
 else
     echo "1. ----- A APLICAÇÃO JÁ CONTÉM OS ARQUIVOS DA APLICAÇÃO -----";
@@ -60,6 +59,14 @@ sed -i "s|const GOOGLE_CLIENT_ID      = '';|const GOOGLE_CLIENT_ID      = '$GOOG
 sed -i "s|const GOOGLE_CLIENT_SECRET  = '';|const GOOGLE_CLIENT_SECRET  = '$GOOGLE_CLIENT_SECRET';|g" config.php
 sed -i "s|const GOOGLE_API_KEY        = '';|const GOOGLE_API_KEY        = '$GOOGLE_API_KEY';|g" config.php
 echo "....ALTERAÇÃO CONCLUÍDA";
+
+if [ "$RATE_LIMITING_DISABLED" = "TRUE" ]; then
+    echo '===== Desabilitando o rate limiting =====';
+    sed -i "s|\$config\['rate_limiting'\] = TRUE;|\$config\['rate_limiting'\] = FALSE;|" "./application/config/config.php"
+else
+    echo '===== Habilitando o rate limiting =====';
+    sed -i "s|\$config\['rate_limiting'\] = FALSE;|\$config\['rate_limiting'\] = TRUE;|" "./application/config/config.php"
+fi
 
 email_file="./application/config/email.php"
 # Verificar o valor da variável $EMAIL_ENABLED
