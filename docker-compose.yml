@@ -8,6 +8,7 @@ services:
       - "80:80"
     environment:
       VERSION: ${VERSION}  # Especifique a versão desejada do Easy!Appointments
+      RATE_LIMITING_DISABLED: ${RATE_LIMITING_DISABLED}
       DB_HOST: 'mysql'
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
